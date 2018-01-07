@@ -23,6 +23,7 @@ Simply include BRW.inc in your file.
 ### Reading
 
 Values can either be passed by reference or returned. The value returned or passed by reference is converted to a PAWN cell (4-bytes). 
+Each time a function is called, the specific amount of bytes each data type holds are advanced on the file, e.g, INT16 will advance 2 bytes.
 ```pawn
 //Signed INT8 (signed byte)
 BRW::ReadInt8(BRW:handle, &int8 = 0); //Range [-127, 127]
