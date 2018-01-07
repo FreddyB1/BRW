@@ -22,6 +22,7 @@ Simply include BRW.inc in your file.
 
 ### Reading
 
+Values can either be passed by reference or returned. 
 ```pawn
 //Signed INT8 (signed byte)
 BRW::ReadInt8(BRW:handle, &int8 = 0); //Range [-127, 127]
