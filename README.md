@@ -35,7 +35,7 @@ BRW::ReadUByte(BRW:handle, &uint8 = 0); //Range [0, 255]
 BRW::ReadInt16(BRW:handle, &int16 = 0); //Range [-32767, 32767]
 BRW::ReadUInt16(BRW:handle, &uint16 = 0); //Range [0, 65535]
 
-//Signed INT32 / Unsigned INT32 (doesn't support values greater than 0x7FFFFFFF - if greater issues a warning with the value in HEX)
+//Signed INT32 / Unsigned INT32 (doesn't support values greater than 0x7FFFFFFF - if greater, prints a warning with the value in HEX)
 BRW::ReadInt32(BRW:handle, &int32 = 0); //Range [-2147483647, 2147483647]
 BRW::ReadUInt32(BRW:handle, &uint32 = 0); 
 
