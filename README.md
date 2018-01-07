@@ -20,10 +20,41 @@ Simply include BRW.inc in your file.
 
 ## Functions:
 
+```pawn
+// Returns a valid handle.
+BRW: BRW::Open(const filename[], fmode:BRW::type, Endianness:format = little_endian, bool:append = false);
+ 
+ Endianness:
+    - little_endian
+    - big_endian
+    
+ fmode:
+    - bin_read
+    - bin_write
+```
+
+```pawn
+//Closes a handle that was previously opened and returns the number of bytes read or written.
+BRW::Close(BRW:handle);
+```
+
+
+```pawn
+//Jumps to a specific location in the file using a certain offset.
+BRW::Seek(BRW:handle, offset, seek_whence: whence = seek_start);
+
+  seek_whence
+     -  seek_start //start of the file
+     -  seek_current //current position in the file
+     -  seek_end //end of the file
+
+//Skips a certain number of bytes relative to the current position in the file.
+BRW::Skip(BRW:handle, number_of_bytes);
+```
 ### Reading
 
 
-Values can either be called-by-reference or returned. The value returned or called-by-reference is converted to a PAWN cell (4-bytes). 
+Values can either be retrieved: called-by-reference or returned. The value returned or called-by-reference is converted to a PAWN cell (4-bytes). 
 Each time a function is called, the specific amount of bytes each data type holds are advanced on the file, e.g, INT16 will advance 2 bytes.
 
 ```pawn
