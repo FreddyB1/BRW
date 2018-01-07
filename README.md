@@ -22,8 +22,10 @@ Simply include BRW.inc in your file.
 
 ### Reading
 
-Values can either be passed by reference or returned. The value returned or passed by reference is converted to a PAWN cell (4-bytes). 
+
+Values can either be called-by-reference or returned. The value returned or called-by-reference is converted to a PAWN cell (4-bytes). 
 Each time a function is called, the specific amount of bytes each data type holds are advanced on the file, e.g, INT16 will advance 2 bytes.
+
 ```pawn
 //Signed INT8 (signed byte)
 BRW::ReadInt8(BRW:handle, &int8 = 0); //Range [-127, 127]
@@ -51,6 +53,9 @@ Float:BRW::ReadFloat(BRW:handle, &Float:value = BRW_FLOAT_NAN)
 
 ### Writing
 
+
+The input values are PAWN cells that are converted to the specific amount of bytes each data type holds, the values must be bound by the ranges for each data type.
+Each time a function is called, the specific amount of bytes each data type holds are advanced on the file, e.g, INT16 will advance 2 bytes.
 
 ```pawn
 //Signed INT8 (signed byte)
