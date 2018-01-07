@@ -120,6 +120,8 @@ Reading nodes from the Node*.dat files in the GTA SA's paths folder:
 ```pawn
 /*
 
+/*
+
 Example using BRW to read binary data contained in the GTA SA Path's folder.
 Documentation to read the binary files can be found at: http://gta.wikia.com/wiki/Paths_(GTA_SA)
 
@@ -160,15 +162,10 @@ main()
 {
 	new const filename[24] = "Paths/NODES21.dat";
 	new Float:x, Float:y, Float:z, linkid, areaid, nodetype;
-	new veh_ped_nodes_total = 0;
-	new navi_nodes = 0;
-	GetHeaderInfo(filename, veh_ped_nodes_total, .navi_nodes = navi_nodes);
-	printf("Path nodes: \n");
-	for(new i = 0; i < veh_ped_nodes_total; i++)
-	{
-		ReadPathNode(filename, i, x, y, z, linkid, areaid, nodetype);
-		printf("nodeid: %d | areaid: %d | linkid: %d | type: %d | pos(%f, %f, %f)", i, areaid, linkid, nodetype, x, y, z);
-	}
+	const nodeid = 23;
+	printf("Path node: \n");
+	ReadPathNode(filename, nodeid, x, y, z, linkid, areaid, nodetype);
+	printf("nodeid: %d | areaid: %d | linkid: %d | type: %d | pos(%f, %f, %f)", nodeid, areaid, linkid, nodetype, x, y, z);
 
 
 }
@@ -195,18 +192,6 @@ stock ReadPathNode(const filename[], nodeid, &Float:x, &Float:y, &Float:z, &link
 	areaid = BRW::ReadUInt16(handle);
 	BRW::Seek(handle, 3, seek_current); //skip 3 bytes (nodeid and path width) could have used BRW::Skip(handle, 3);
 	nodetype = BRW::ReadInt8(handle); //Unsigned INT8 (byte)
-	BRW::Close(handle);
-	return 1;
-}
-
-stock GetHeaderInfo(const filename[], &total_nodes, &vehicle_nodes = 0, &ped_nodes = 0, &navi_nodes = 0, &links = 0)
-{
-	new BRW: handle = BRW::Open(filename, bin_read);//The default endianness is: Little endian.
-	total_nodes = BRW::ReadUInt32(handle);
-	vehicle_nodes = BRW::ReadUInt32(handle);
-	ped_nodes = BRW::ReadUInt32(handle);
-	navi_nodes = BRW::ReadUInt32(handle);
-	links = BRW::ReadUInt32(handle);
 	BRW::Close(handle);
 	return 1;
 }
