@@ -6,6 +6,7 @@
 
     Copyright 2017 Freddy Borja (ThreeKingz aka ThePhenix)
 
+
 Available at: https://github.com/ThreeKingz/BRW
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -148,16 +149,16 @@ static stock BRW::Int32ToBytes(int32, &byte1, &byte2, &byte3, &byte4, Endianness
 	{
 		case big_endian:
 		{
-			byte1 = (int32 & (1 << 31)) ? ((int32 >> 24) | (1 << 7)) : (int32 >> 24);
-			byte2 = (int32 & 0xFF0000) >> 16;
-			byte3 = (int32 & 0xFF00) >> 8;
+			byte1 = int32 >>> 24;
+			byte2 = (int32 & 0xFF0000) >>> 16;
+			byte3 = (int32 & 0xFF00) >>> 8;
 			byte4 = (int32 & 0xFF);
 		}
 		case little_endian:
 		{
-			byte4 = (int32 & (1 << 31)) ? ((int32 >> 24) | (1 << 7)) : (int32 >> 24);
-			byte3 = (int32 & 0xFF0000) >> 16;
-			byte2 = (int32 & 0xFF00) >> 8;
+			byte4 = int32 >>> 24;
+			byte3 = (int32 & 0xFF0000) >>> 16;
+			byte2 = (int32 & 0xFF00) >>> 8;
 			byte1 = (int32 & 0xFF);
 		}
 	}
@@ -298,16 +299,16 @@ static stock BRW::SPFloatToBytes(Float:value, &byte1, &byte2, &byte3, &byte4, En
 	{
 		case big_endian:
 		{
-			byte1 = (_:value & (1 << 31)) ? (((_:value) >> 24) | (1 << 7)) : ((_:value) >> 24);
-			byte2 = (_:value & 0xFF0000) >> 16;
-			byte3 = (_:value & 0xFF00) >> 8;
+			byte1 = (_:value >>> 24);
+			byte2 = (_:value & 0xFF0000) >>> 16;
+			byte3 = (_:value & 0xFF00) >>> 8;
 			byte4 = (_:value & 0xFF);
 		}
 		case little_endian:
 		{
-			byte4 = (_:value & (1 << 31)) ? (((_:value) >> 24) | (1 << 7)) : ((_:value) >> 24);
-			byte3 = (_:value & 0xFF0000) >> 16;
-			byte2 = (_:value & 0xFF00) >> 8;
+			byte4 = (_:value >>> 24);
+			byte3 = (_:value & 0xFF0000) >>> 16;
+			byte2 = (_:value & 0xFF00) >>> 8;
 			byte1 = (_:value & 0xFF);
 		}
 	}
