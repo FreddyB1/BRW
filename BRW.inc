@@ -794,7 +794,7 @@ stock BRW::ReadInt16(BRW:handle, &int16 = 0)
 	return int16;
 }
 
-/*
+
 
 Not used for now...
 stock BRW::WriteString(BRW:handle, const string[])
@@ -826,7 +826,7 @@ stock BRW::ReadString(BRW:handle, output[], len = sizeof(output))
 		idx++;
 	}
 	return 1;
-}*/
+}
 
 #if BRW_DISPLAY_WARNING_MSGS == true
 #undef BRW_SendWarning
