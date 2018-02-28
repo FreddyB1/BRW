@@ -455,6 +455,17 @@ stock BRW::WriteCells(BRW:handle, const buffer[], maxlen = sizeof(buffer))
 	return bytes_written;
 }
 
+stock BRW::GetCurrentBytes(BRW:handle)
+{
+	if(!BRW::IsValidHandle(handle)) return 0;
+	return BRW::Info[handle][BRW::BYTE_COUNT];
+}
+stock BRW::GetTotalBytes(BRW:handle)
+{
+	if(!BRW::IsValidHandle(handle)) return 0;
+	new File:fhandle = BRW::GetFileHandle(handle);
+	return flength(fhandle);
+}
 stock BRW::ReadCells(BRW:handle, buffer[], maxlen = sizeof(buffer))
 {
 	if(!BRW::IsValidHandle(handle) || BRW::Info[handle][BRW::FMODE] != bin_read) return 0;
@@ -793,7 +804,19 @@ stock BRW::ReadInt16(BRW:handle, &int16 = 0)
 	int16 = BRW::BytesToInt16(byte1, byte2, BRW::Info[handle][BRW::ENDIANNESS_SELECTED]);
 	return int16;
 }
-
+stock BRW::WriteString(BRW:handle, const string[])
+{
+	if(!BRW::IsValidHandle(handle) || BRW::Info[handle][BRW::FMODE] != bin_write) return 0;
+	new File:fhandle = BRW::Info[handle][BRW::INPUT_FILE_HANDLE];
+	for(new i = 0; i < strlen(string); i++)
+	{
+		BRW::FileWriteRawByte(fhandle, string[i]);
+		BRW::Info[handle][BRW::BYTE_COUNT]++;
+	}
+	BRW::FileWriteRawByte(fhandle, '\0'); //NULL terminator
+	BRW::Info[handle][BRW::BYTE_COUNT]++;
+	return 1;
+}
 /*
 
 Not used for now...
