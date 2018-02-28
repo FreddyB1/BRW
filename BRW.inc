@@ -133,11 +133,11 @@ static stock BRW::BytesToInt32(byte1, byte2, byte3, byte4, Endianness:format = l
 	{
 		case big_endian:
 		{
-			return (byte1<<24)+(byte2<<16)+(byte3<<8)+byte4;
+			return (byte1<<24)|(byte2<<16)|(byte3<<8)|byte4;
 		}
 		case little_endian:
 		{
-			return (byte4<<24)+(byte3<<16)+(byte2<<8)+byte1;
+			return (byte4<<24)|(byte3<<16)|(byte2<<8)|byte1;
 		}
 	}
 	return 0;
@@ -175,11 +175,11 @@ static stock BRW::BytesToUInt16(byte1, byte2, Endianness:format = little_endian)
 	{
 		case big_endian:
 		{
-			return (byte1<<8)+byte2;
+			return (byte1<<8)|byte2;
 		}
 		case little_endian:
 		{
-			return (byte2<<8)+byte1;
+			return (byte2<<8)|byte1;
 		}
 	}
 	return 0;
@@ -211,22 +211,22 @@ static stock BRW::BytesToInt16(byte1, byte2, Endianness:format = little_endian)
 		{
 			if(byte1 & (1 << 7)) 
 			{
-				return (0xFFFF0000 + (byte1<<8) + byte2); 
+				return (0xFFFF0000 | (byte1<<8) | byte2); 
 			}
 			else
 			{
-				return ((byte1<<8) + byte2);
+				return ((byte1<<8) | byte2);
 			}
 		}
 		case little_endian:
 		{
 			if(byte2 & (1 << 7)) 
 			{
-				return (0xFFFF0000 + (byte2<<8) + byte1); 
+				return (0xFFFF0000 | (byte2<<8) | byte1); 
 			}
 			else
 			{
-				return ((byte2<<8) + byte1);
+				return ((byte2<<8) | byte1);
 			}
 		}
 	}
@@ -282,7 +282,7 @@ static stock BRW::ByteToInt8(byte)
 {
 	if(byte & (1 << 7)) //negative
 	{
-		return (0xFFFFFF00 + byte); 
+		return (0xFFFFFF00 | byte); 
 	}
 	else
 	{
@@ -321,7 +321,7 @@ static stock Float:BRW::SPBytesToFloat(byte1, byte2, byte3, byte4, Endianness:fo
 	{
 		case big_endian:
 		{
-			new value = ((byte1 << 24) + (byte2 << 16) + (byte3 << 8) + (byte4));
+			new value = ((byte1 << 24) | (byte2 << 16) | (byte3 << 8) | (byte4));
 			new sign = (value & (1 << 31)) ? -1 : 1;
 			new mantissa = (value & 0x7FFFFF);
 			new exponent = (value & 0x7F800000) >> 23;
@@ -334,7 +334,7 @@ static stock Float:BRW::SPBytesToFloat(byte1, byte2, byte3, byte4, Endianness:fo
 		}
 		case little_endian:
 		{
-			new value = ((byte4 << 24) + (byte3 << 16) + (byte2 << 8) + (byte1));
+			new value = ((byte4 << 24) | (byte3 << 16) | (byte2 << 8) | (byte1));
 			new sign = (value & (1 << 31)) ? -1 : 1;
 			new mantissa = (value & 0x7FFFFF);
 			new exponent = (value & 0x7F800000) >> 23;
@@ -455,6 +455,17 @@ stock BRW::WriteCells(BRW:handle, const buffer[], maxlen = sizeof(buffer))
 	return bytes_written;
 }
 
+stock BRW::GetCurrentBytes(BRW:handle)
+{
+	if(!BRW::IsValidHandle(handle)) return 0;
+	return BRW::Info[handle][BRW::BYTE_COUNT];
+}
+stock BRW::GetTotalBytes(BRW:handle)
+{
+	if(!BRW::IsValidHandle(handle)) return 0;
+	new File:fhandle = BRW::GetFileHandle(handle);
+	return flength(fhandle);
+}
 stock BRW::ReadCells(BRW:handle, buffer[], maxlen = sizeof(buffer))
 {
 	if(!BRW::IsValidHandle(handle) || BRW::Info[handle][BRW::FMODE] != bin_read) return 0;
@@ -793,8 +804,20 @@ stock BRW::ReadInt16(BRW:handle, &int16 = 0)
 	int16 = BRW::BytesToInt16(byte1, byte2, BRW::Info[handle][BRW::ENDIANNESS_SELECTED]);
 	return int16;
 }
-
-
+stock BRW::WriteString(BRW:handle, const string[])
+{
+	if(!BRW::IsValidHandle(handle) || BRW::Info[handle][BRW::FMODE] != bin_write) return 0;
+	new File:fhandle = BRW::Info[handle][BRW::INPUT_FILE_HANDLE];
+	for(new i = 0; i < strlen(string); i++)
+	{
+		BRW::FileWriteRawByte(fhandle, string[i]);
+		BRW::Info[handle][BRW::BYTE_COUNT]++;
+	}
+	BRW::FileWriteRawByte(fhandle, '\0'); //NULL terminator
+	BRW::Info[handle][BRW::BYTE_COUNT]++;
+	return 1;
+}
+/*
 
 Not used for now...
 stock BRW::WriteString(BRW:handle, const string[])
@@ -826,7 +849,7 @@ stock BRW::ReadString(BRW:handle, output[], len = sizeof(output))
 		idx++;
 	}
 	return 1;
-}
+}*/
 
 #if BRW_DISPLAY_WARNING_MSGS == true
 #undef BRW_SendWarning
